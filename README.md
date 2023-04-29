@@ -21,9 +21,11 @@ Users can change their password at any time after logging in.
 
 ### 7. CRUD Operations: 
 
-### Screenshot's:
+
 Users can perform Create, Read, Update, and Delete operations on any coach or member information, making it easy to manage the restaurant data.
 
+
+### Screenshot's:
 ![Login Page](https://user-images.githubusercontent.com/110332302/235323018-c6c5aed7-1cd7-41f9-ae40-9e2c92faa9e6.png)
 
 ![Sign up Page](https://user-images.githubusercontent.com/110332302/235323035-692b7a18-ec24-405f-8c6c-0ee956157789.png)
