@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Restaurant Management System.jnlp">
+  <information>
+    <title>Restaurant Management System</title>
+    <vendor>ASUS</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="lib\bcprov-jdk15on-1.70.jar" size="5867298" download="eager" />
+    <jar href="lib\bcutil-jdk15on-1.70.jar" size="482530" download="eager" />
+    <jar href="lib\commons-beanutils-1.9.4.jar" size="246918" download="eager" />
+    <jar href="lib\commons-collections-3.2.2.jar" size="588337" download="eager" />
+    <jar href="lib\commons-collections4-4.2.jar" size="752798" download="eager" />
+    <jar href="lib\commons-digester-2.1.jar" size="196768" download="eager" />
+    <jar href="lib\commons-logging-1.1.1.jar" size="60686" download="eager" />
+    <jar href="lib\ecj-3.21.0.jar" size="2989263" download="eager" />
+    <jar href="lib\itext-2.1.7.js10.jar" size="1131573" download="eager" />
+    <jar href="lib\jackson-annotations-2.13.3.jar" size="75714" download="eager" />
+    <jar href="lib\jackson-core-2.13.3.jar" size="374895" download="eager" />
+    <jar href="lib\jackson-databind-2.13.3.jar" size="1536542" download="eager" />
+    <jar href="lib\jackson-dataformat-xml-2.13.3.jar" size="122296" download="eager" />
+    <jar href="lib\jasperreports-6.20.0.jar" size="5641898" download="eager" />
+    <jar href="lib\javax.mail-1.6.2.jar" size="659031" download="eager" />
+    <jar href="lib\jcommon-1.0.23.jar" size="330246" download="eager" />
+    <jar href="lib\jfreechart-1.0.19.jar" size="1565065" download="eager" />
+    <jar href="lib\mysql-connector-java-5.1.48.jar" size="1006956" download="eager" />
+    <jar href="lib\ojdbc14-10.2.0.2.0.jar" size="1545954" download="eager" />
+    <jar href="lib\stax2-api-4.2.1.jar" size="195909" download="eager" />
+    <jar href="lib\woodstox-core-6.2.7.jar" size="1584634" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Restaurant Management System" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="restaurant.management.system.RestaurantManagementSystem"  name="Restaurant Management System" />
+  <update check="always"/>
+</jnlp>
