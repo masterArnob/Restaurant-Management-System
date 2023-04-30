@@ -703,6 +703,7 @@ public class AfterLoginController implements Initializable {
     @FXML
     public void AddToCart() {
 
+        
         String PID = order_product_ID.getSelectionModel().getSelectedItem().toString();
         String PName = order_product_Name.getSelectionModel().getSelectedItem().toString();
         String PType = orderType;
@@ -740,7 +741,7 @@ public class AfterLoginController implements Initializable {
         cartList c = order_cart_table.getSelectionModel().getSelectedItem();
         int num = order_cart_table.getSelectionModel().getSelectedIndex();
 
-        //int num = order_cart_table.getSelectionModel().getFocusedIndex();
+        
         if ((num - 1) < -1) {
             return;
         }
