@@ -115,37 +115,7 @@ public class AfterLoginController implements Initializable {
     private AnchorPane left_main1;
     @FXML
     private Label greetings;
-    @FXML
-    private ComboBox<String> order_product_ID;
-    @FXML
-    private ComboBox<String> order_product_Name;
-    @FXML
-    private TextField order_product_Quantity;
-    @FXML
-    private Label order_product_Price;
-    @FXML
-    private Button AddToCart;
-    @FXML
-    private TableView<cartList> order_cart_table;
-    @FXML
-    private TableColumn<cartList, String> order_col_productID;
-    @FXML
-    private TableColumn<cartList, String> order_col_productName;
-    @FXML
-    private TableColumn<cartList, String> order_col_productType;
-    @FXML
-    private TableColumn<cartList, String> order_col_productQuantity;
-    @FXML
-    private TableColumn<cartList, String> order_col_productPrice;
-    @FXML
-    private Label cartTotal;
-    @FXML
-    private Button pay;
-    @FXML
-    private TextField order_amount;
-    @FXML
-    private Label change;
-    @FXML
+
     private Button removeFromCart;
     @FXML
     private Label numofp;
@@ -189,6 +159,39 @@ public class AfterLoginController implements Initializable {
     private Button productListDownload;
     @FXML
     private AnchorPane left_main7;
+
+    @FXML
+    private ComboBox<String> orderProductID;
+    @FXML
+    private ComboBox<String> orderProductName;
+    @FXML
+    private Label price;
+    @FXML
+    private TextField qty;
+    @FXML
+    private TableColumn<cartList, String> order_col_productID;
+    @FXML
+    private TableColumn<cartList, String> order_col_productName;
+    @FXML
+    private TableColumn<cartList, Integer> order_col_productQuantity;
+    @FXML
+    private TableColumn<cartList, String> order_col_productType;
+    @FXML
+    private TableColumn<cartList, Integer> order_col_productPrice;
+    @FXML
+    private TableView<cartList> order_table;
+    @FXML
+    private Label tp;
+    @FXML
+    private TextField amount;
+    @FXML
+    private Label b;
+    @FXML
+    private Button addshop;
+    @FXML
+    private Button shoppay;
+    @FXML
+    private Button deleteshop;
 
     public void type() {
         List<String> foodType = new ArrayList<>();
@@ -471,313 +474,6 @@ public class AfterLoginController implements Initializable {
         }
     }
 
-    @FXML
-    public void orderProductID() {
-        String sql = "SELECT product_id FROM product WHERE status = 'Available'";
-        try {
-            con = database.connectDB();
-            st = con.createStatement();
-            rs = st.executeQuery(sql);
-
-            ObservableList listData = FXCollections.observableArrayList();
-            while (rs.next()) {
-                listData.add(rs.getString("product_id"));
-            }
-            order_product_ID.setItems(listData);
-
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-    }
-
-    @FXML
-    public void orderProductName() {
-
-        String sql = "SELECT product_name FROM product WHERE product_id = '" + order_product_ID.getSelectionModel().getSelectedItem() + "'";
-
-        try {
-            con = database.connectDB();
-            st = con.createStatement();
-            rs = st.executeQuery(sql);
-
-            ObservableList listData = FXCollections.observableArrayList();
-            while (rs.next()) {
-                listData.add(rs.getString("product_name"));
-            }
-            order_product_Name.setItems(listData);
-            orderType();
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-
-    }
-
-    private int qty;
-    private int result;
-    private int totalPrice;
-    private String orderType;
-
-    @FXML
-    public void QantityAndShowPrice() {
-        String sql = "SELECT price FROM product WHERE product_id = '" + order_product_ID.getSelectionModel().getSelectedItem() + "' and product_name = '" + order_product_Name.getSelectionModel().getSelectedItem() + "'";
-        try {
-            con = database.connectDB();
-            st = con.createStatement();
-            rs = st.executeQuery(sql);
-
-            if (rs.next()) {
-                totalPrice = rs.getInt("price");
-            }
-            qty = Integer.parseInt(order_product_Quantity.getText());
-            result = (qty * totalPrice);
-            order_product_Price.setText("$" + result);
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-    }
-
-    public void orderType() {
-        String sql = "SELECT type FROM product WHERE product_id = '" + order_product_ID.getSelectionModel().getSelectedItem() + "'";
-
-        try {
-            con = database.connectDB();
-            st = con.createStatement();
-            rs = st.executeQuery(sql);
-            if (rs.next()) {
-                orderType = rs.getString("type");
-            }
-            System.out.println("Order Type is  " + orderType);
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-
-    }
-
-    public ObservableList<cartList> cartData() {
-        String sql = "SELECT * FROM customerorder";
-        ObservableList listData = FXCollections.observableArrayList();
-        try {
-            con = database.connectDB();
-            st = con.createStatement();
-            rs = st.executeQuery(sql);
-
-            cartList cList;
-
-            while (rs.next()) {
-                cList = new cartList(
-                        rs.getString("product_id"),
-                        rs.getString("product_name"),
-                        rs.getString("type"),
-                        rs.getInt("quantity"),
-                        rs.getInt("price")
-                );
-                listData.add(cList);
-            }
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-        return listData;
-    }
-
-    private ObservableList<cartList> dataCart;
-
-    public void showCartData() {
-        dataCart = cartData();
-
-        order_col_productID.setCellValueFactory(new PropertyValueFactory<>("product_id"));
-        order_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-        order_col_productType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        order_col_productQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        order_col_productPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-
-        order_cart_table.setItems(dataCart);
-
-    }
-
-    public void customerRecipt() {
-        total();
-        String sql2 = "SELECT * FROM customerorder";
-
-        try {
-
-            Class.forName("com.mysql.jdbc.Driver");
-            con = database.connectDB();
-
-            JasperDesign jdesign = JRXmlLoader.load("E:\\Java\\Projects\\Restaurant Management System\\src\\restaurant\\management\\system\\recipt.jrxml");
-
-            JRDesignQuery updateQuery = new JRDesignQuery();
-
-            updateQuery.setText(sql2);
-
-            jdesign.setQuery(updateQuery);
-
-            JasperReport jreport = JasperCompileManager.compileReport(jdesign);
-            JasperPrint jprint = JasperFillManager.fillReport(jreport, null, con);
-
-            JasperViewer.viewReport(jprint, false);
-
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-    }
-
-    private int count;
-
-    @FXML
-    public void pay() {
-        alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("PAYMENT?");
-        Optional<ButtonType> option = alert.showAndWait();
-        if (option.get().equals(ButtonType.OK)) {
-
-            count++;
-            System.out.println("Number of Orders : " + count);
-            customerRecipt();
-
-            String sql = "DELETE FROM customerorder";
-
-            try {
-                con = database.connectDB();
-                st = con.createStatement();
-                st.executeUpdate(sql);
-                showCartData();
-                orderClear();
-
-            } catch (Exception e) {
-                System.out.println("" + e);
-            }
-        }
-
-    }
-
-    public void orderClear() {
-        order_product_ID.getSelectionModel().clearSelection();
-        order_product_Name.getSelectionModel().clearSelection();
-        order_product_Quantity.setText("");
-        order_product_Price.setText("");
-        cartTotal.setText("");
-        change.setText("");
-        order_amount.setText("");
-    }
-
-    private int amount1;
-    private int amount2;
-
-    @FXML
-    public void amount() {
-        amount1 = Integer.parseInt(order_amount.getText());
-        if (amount1 < dt) {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Amount is low");
-            alert.showAndWait();
-        } else if (amount1 >= dt) {
-            amount2 = (amount1 - dt);
-            change.setText("$" + amount2);
-
-            System.out.println(amount2);
-        }
-    }
-
-    private int dt;
-
-    public void total() {
-        String sql = "select sum(price) from customerorder";
-
-        try {
-            con = database.connectDB();
-            st = con.createStatement();
-            rs = st.executeQuery(sql);
-
-            if (rs.next()) {
-                dt = rs.getInt("sum(price)");
-            }
-            System.out.println("Total : " + dt);
-            cartTotal.setText("$" + dt);
-
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-
-    }
-
-    @FXML
-    public void AddToCart() {
-
-        
-        String PID = order_product_ID.getSelectionModel().getSelectedItem().toString();
-        String PName = order_product_Name.getSelectionModel().getSelectedItem().toString();
-        String PType = orderType;
-        int PQty = qty;
-        int PPrice = result;
-        int tt = dt;
-
-        System.out.println("Cart total is " + tt);
-        System.out.println("PID is" + PID);
-        String sql = "INSERT INTO customerorder (product_id, product_name, type, quantity, price, total) "
-                + "VALUES('" + PID + "','" + PName + "','" + PType + "'," + PQty + "," + PPrice + "," + tt + ")";
-
-        String sql2 = "INSERT INTO orderhistory (product_id, product_name, type, quantity, price) "
-                + "VALUES('" + PID + "','" + PName + "','" + PType + "'," + PQty + "," + PPrice + ")";
-
-        try {
-            con = database.connectDB();
-            st = con.createStatement();
-            st.executeUpdate(sql);
-            st.executeUpdate(sql2);
-            System.out.println("customerOrder is added");
-            System.out.println("orderHistory is added");
-            showCartData();
-            total();
-
-        } catch (Exception e) {
-            System.out.println("" + e);
-        }
-
-    }
-
-    @FXML
-    public void CartTableSelect() {
-
-        cartList c = order_cart_table.getSelectionModel().getSelectedItem();
-        int num = order_cart_table.getSelectionModel().getSelectedIndex();
-
-        
-        if ((num - 1) < -1) {
-            return;
-        }
-
-        order_product_ID.setValue(c.getProduct_id());
-        order_product_Name.setValue(c.getProduct_name());
-        order_product_Price.setText(String.valueOf(c.getPrice()));
-
-    }
-
-    @FXML
-    public void removeFromCart() {
-
-        String PID = order_product_ID.getSelectionModel().getSelectedItem().toString();
-        String PName = order_product_Name.getSelectionModel().getSelectedItem().toString();
-
-        alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("Remove from Cart?");
-        Optional<ButtonType> option = alert.showAndWait();
-        if (option.get().equals(ButtonType.OK)) {
-            String sql = "DELETE FROM customerorder WHERE product_id = '" + PID + "' and product_name = '" + PName + "'";
-
-            try {
-                con = database.connectDB();
-                st = con.createStatement();
-                st.executeUpdate(sql);
-                System.out.println("Deleted from cart");
-                showCartData();
-                total();
-            } catch (Exception e) {
-                System.out.println("" + e);
-            }
-        }
-
-    }
-
     private int np;
 
     public void numberofProducts() {
@@ -795,10 +491,6 @@ public class AfterLoginController implements Initializable {
         } catch (Exception e) {
             System.out.println("" + e);
         }
-    }
-
-    public void numberofOrders() {
-        no.setText("" + count);
     }
 
     private int ti;
@@ -880,136 +572,6 @@ public class AfterLoginController implements Initializable {
             stage.setScene(scene);
             stage.show();
             afterLogin_page.getScene().getWindow().hide();
-        }
-
-    }
-
-    public void ButtonStyles() {
-        dashboard_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        dashboard_btn.setOnMouseEntered(e -> dashboard_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        dashboard_btn.setOnMouseExited(e -> dashboard_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        products_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        products_btn.setOnMouseEntered(e -> products_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        products_btn.setOnMouseExited(e -> products_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        order_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        order_btn.setOnMouseEntered(e -> order_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        order_btn.setOnMouseExited(e -> order_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        add.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        add.setOnMouseEntered(e -> add.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        add.setOnMouseExited(e -> add.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        update.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        update.setOnMouseEntered(e -> update.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        update.setOnMouseExited(e -> update.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        delete.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        delete.setOnMouseEntered(e -> delete.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        delete.setOnMouseExited(e -> delete.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        clear.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        clear.setOnMouseEntered(e -> clear.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        clear.setOnMouseExited(e -> clear.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        insertProductImage.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        insertProductImage.setOnMouseEntered(e -> insertProductImage.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        insertProductImage.setOnMouseExited(e -> insertProductImage.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        AddToCart.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        AddToCart.setOnMouseEntered(e -> AddToCart.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        AddToCart.setOnMouseExited(e -> AddToCart.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        pay.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        pay.setOnMouseEntered(e -> pay.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        pay.setOnMouseExited(e -> pay.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        removeFromCart.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        removeFromCart.setOnMouseEntered(e -> removeFromCart.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        removeFromCart.setOnMouseExited(e -> removeFromCart.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        logout.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        logout.setOnMouseEntered(e -> logout.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        logout.setOnMouseExited(e -> logout.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        settings_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        settings_btn.setOnMouseEntered(e -> settings_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        settings_btn.setOnMouseExited(e -> settings_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        myProfile_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        myProfile_btn.setOnMouseEntered(e -> myProfile_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        myProfile_btn.setOnMouseExited(e -> myProfile_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        changePassword_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        changePassword_btn.setOnMouseEntered(e -> changePassword_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        changePassword_btn.setOnMouseExited(e -> changePassword_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        about_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        about_btn.setOnMouseEntered(e -> about_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        about_btn.setOnMouseExited(e -> about_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        deleteAccount_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        deleteAccount_btn.setOnMouseEntered(e -> deleteAccount_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        deleteAccount_btn.setOnMouseExited(e -> deleteAccount_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-        productListDownload.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
-        productListDownload.setOnMouseEntered(e -> productListDownload.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
-        productListDownload.setOnMouseExited(e -> productListDownload.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
-
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        displayUsername();
-        type();
-        status();
-        showProductList();
-        ButtonStyles();
-        Grettings();
-
-        orderProductID();
-        orderProductName();
-
-        showCartData();
-        numberofProducts();
-        numberofOrders();
-        TodaysIncome();
-        dashboardChart();
-
-        showUserImage();
-
-    }
-
-    @FXML
-    private void switchButtons(ActionEvent event) {
-        if (event.getSource() == dashboard_btn) {
-            dashboard_page.setVisible(true);
-            product_page.setVisible(false);
-            order_page.setVisible(false);
-            settings_page.setVisible(false);
-            numberofProducts();
-            numberofOrders();
-            TodaysIncome();
-            dashboardChart();
-        } else if (event.getSource() == products_btn) {
-            dashboard_page.setVisible(false);
-            product_page.setVisible(true);
-            order_page.setVisible(false);
-            settings_page.setVisible(false);
-            showProductList();
-        } else if (event.getSource() == order_btn) {
-            dashboard_page.setVisible(false);
-            product_page.setVisible(false);
-            order_page.setVisible(true);
-            settings_page.setVisible(false);
-            orderProductID();
-        } else if (event.getSource() == settings_btn) {
-            dashboard_page.setVisible(false);
-            product_page.setVisible(false);
-            order_page.setVisible(false);
-            settings_page.setVisible(true);
-            showUserImage();
         }
 
     }
@@ -1110,6 +672,466 @@ public class AfterLoginController implements Initializable {
         } catch (Exception e) {
             System.out.println("" + e);
         }
+    }
+
+    public void orderProductID() {
+        String sql = "SELECT product_id FROM product WHERE status = 'Available'";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            ObservableList listData = FXCollections.observableArrayList();
+            while (rs.next()) {
+                listData.add(rs.getString("product_id"));
+            }
+            orderProductID.setItems(listData);
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+    }
+
+    @FXML
+    public void orderProductName() {
+        String sql = "SELECT product_name FROM product WHERE product_id = '" + orderProductID.getSelectionModel().getSelectedItem() + "'";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            ObservableList listData = FXCollections.observableArrayList();
+            while (rs.next()) {
+                listData.add(rs.getString("product_name"));
+            }
+            orderProductName.setItems(listData);
+            productPrice();
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+    }
+
+    private int P;
+
+    public void productPrice() {
+        String sql = "SELECT price FROM product WHERE product_id = '" + orderProductID.getSelectionModel().getSelectedItem() + "'";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                P = rs.getInt("price");
+            }
+            price.setText("$" + P);
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+
+    }
+
+    private String type;
+
+    public void productType() {
+        String sql = "SELECT type FROM product WHERE product_id = '" + orderProductID.getSelectionModel().getSelectedItem() + "'";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                type = rs.getString("type");
+            }
+            System.out.println("Type : " + type);
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+
+    }
+
+    private int Qty;
+    private int result;
+
+    @FXML
+    public void quantity() {
+        Qty = Integer.parseInt(qty.getText());
+        result = (Qty * P);
+        price.setText("$" + result);
+    }
+
+    @FXML
+    public void cartSelect() {
+        cartList c = order_table.getSelectionModel().getSelectedItem();
+        int num = order_table.getSelectionModel().getSelectedIndex();
+        if ((num = -1) < -1) {
+            return;
+        }
+
+        orderProductID.setValue(c.getProduct_id());
+        orderProductName.setValue(c.getProduct_name());
+        qty.setText(String.valueOf(c.getQuantity()));
+
+        price.setText(String.valueOf(c.getPrice()));
+
+    }
+
+    private ObservableList<cartList> cList() {
+        ObservableList listData = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM cart";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            cartList c;
+            while (rs.next()) {
+                c = new cartList(
+                        rs.getString("product_id"),
+                        rs.getString("product_name"),
+                        rs.getString("type"),
+                        rs.getInt("quantity"),
+                        rs.getInt("price"));
+
+                listData.add(c);
+            }
+
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+        return listData;
+    }
+
+    private ObservableList<cartList> listC;
+
+    public void showCart() {
+        listC = cList();
+        order_col_productID.setCellValueFactory(new PropertyValueFactory<>("product_id"));
+        order_col_productName.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+        order_col_productQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        order_col_productPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        order_col_productType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        order_table.setItems(listC);
+    }
+
+    public void delete1() {
+        String sql = "DELETE FROM cart";
+        String sql2 = "DELETE FROM customerorder";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            st.executeUpdate(sql);
+            st.executeUpdate(sql2);
+
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+
+    }
+
+    private int v;
+
+    @FXML
+    public void checkAmount() {
+        int m = Integer.parseInt(amount.getText());
+        if (m < tPrice) {
+            a.showAlertForErrror("Amount is little");
+        } else if (m >= tPrice) {
+            v = (m - tPrice);
+            b.setText("$" + v);
+        } else {
+            a.showAlertForErrror("Please enter amount");
+        }
+
+    }
+
+    private int tPrice;
+
+    public void total() {
+        String sql = "SELECT SUM(price) FROM cart";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                tPrice = rs.getInt("SUM(price)");
+            }
+            tp.setText("$" + tPrice);
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+    }
+
+    @FXML
+    public void addToCart() {
+        total();
+        productType();
+        String sql = "INSERT INTO cart(product_id, product_name, type, quantity, price) "
+                + "VALUES('" + orderProductID.getSelectionModel().getSelectedItem() + "','" + orderProductName.getSelectionModel().getSelectedItem() + "','" + type + "'," + Qty + "," + result + ")";
+
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            st.executeUpdate(sql);
+            System.out.println("added");
+
+            showCart();
+            total();
+            orderList();
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+
+    }
+
+    public void orderList() {
+        total();
+        String sql2 = "INSERT INTO customerorder(product_id, product_name, type, quantity, price, total)"
+                + "VALUES('" + orderProductID.getSelectionModel().getSelectedItem() + "','" + orderProductName.getSelectionModel().getSelectedItem() + "','" + type + "'," + Qty + "," + result + "," + tPrice + ")";
+
+        String sql3 = "INSERT INTO orderhistory(product_id, product_name, type, quantity, price)"
+                + "VALUES('" + orderProductID.getSelectionModel().getSelectedItem() + "','" + orderProductName.getSelectionModel().getSelectedItem() + "','" + type + "'," + Qty + "," + result + ")";
+
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+
+            st.executeUpdate(sql2);
+            st.executeUpdate(sql3);
+
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+
+    }
+
+    public void clearOrder() {
+        orderProductID.getSelectionModel().clearSelection();
+        orderProductName.getSelectionModel().clearSelection();
+        qty.setText("");
+        price.setText("");
+        tp.setText("");
+        amount.setText("");
+        b.setText("");
+
+    }
+
+    @FXML
+    public void deleteCart() {
+        total();
+        String sql = "DELETE FROM cart WHERE product_id = '" + orderProductID.getSelectionModel().getSelectedItem() + "'";
+        String q = "DELETE FROM customerorder WHERE product_id = '" + orderProductID.getSelectionModel().getSelectedItem() + "'";
+        String z = "DELETE FROM orderhistory WHERE product_id = '" + orderProductID.getSelectionModel().getSelectedItem() + "'";
+
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            st.executeUpdate(sql);
+
+            st.executeUpdate(q);
+            st.executeUpdate(z);
+
+            showCart();
+            total();
+
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+    }
+
+    @FXML
+    private void pay(ActionEvent event) {
+
+        alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("CheckOut?");
+
+        Optional<ButtonType> option = alert.showAndWait();
+        if (option.get().equals(ButtonType.OK)) {
+
+            String sql = "SELECT * FROM customerorder";
+
+            try {
+
+                Class.forName("com.mysql.jdbc.Driver");
+                con = database.connectDB();
+
+                JasperDesign jdesign = JRXmlLoader.load("E:\\Java\\Projects\\Restaurant Management System\\src\\restaurant\\management\\system\\recipt.jrxml");
+
+                JRDesignQuery updateQuery = new JRDesignQuery();
+
+                updateQuery.setText(sql);
+
+                jdesign.setQuery(updateQuery);
+
+                JasperReport jreport = JasperCompileManager.compileReport(jdesign);
+                JasperPrint jprint = JasperFillManager.fillReport(jreport, null, con);
+
+                JasperViewer.viewReport(jprint, false);
+
+                delete1();
+                showCart();
+                clearOrder();
+
+            } catch (Exception e) {
+                System.out.println("" + e);
+            }
+        } else {
+            a.successAlert("Cancelled");
+        }
+
+    }
+
+    private int NO;
+
+    public void numberOfOrders() {
+        String sql = "select count(*) from orderhistory";
+        try {
+            con = database.connectDB();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                NO = rs.getInt("count(*)");
+            }
+            no.setText("" + NO);
+            System.out.println("" + NO);
+        } catch (Exception e) {
+            System.out.println("" + e);
+        }
+    }
+
+    public void ButtonStyles() {
+        dashboard_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        dashboard_btn.setOnMouseEntered(e -> dashboard_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        dashboard_btn.setOnMouseExited(e -> dashboard_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        products_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        products_btn.setOnMouseEntered(e -> products_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        products_btn.setOnMouseExited(e -> products_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        order_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        order_btn.setOnMouseEntered(e -> order_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        order_btn.setOnMouseExited(e -> order_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        add.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        add.setOnMouseEntered(e -> add.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        add.setOnMouseExited(e -> add.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        update.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        update.setOnMouseEntered(e -> update.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        update.setOnMouseExited(e -> update.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        delete.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        delete.setOnMouseEntered(e -> delete.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        delete.setOnMouseExited(e -> delete.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        clear.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        clear.setOnMouseEntered(e -> clear.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        clear.setOnMouseExited(e -> clear.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        insertProductImage.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        insertProductImage.setOnMouseEntered(e -> insertProductImage.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        insertProductImage.setOnMouseExited(e -> insertProductImage.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        logout.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        logout.setOnMouseEntered(e -> logout.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        logout.setOnMouseExited(e -> logout.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        settings_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        settings_btn.setOnMouseEntered(e -> settings_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        settings_btn.setOnMouseExited(e -> settings_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        myProfile_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        myProfile_btn.setOnMouseEntered(e -> myProfile_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        myProfile_btn.setOnMouseExited(e -> myProfile_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        changePassword_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        changePassword_btn.setOnMouseEntered(e -> changePassword_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        changePassword_btn.setOnMouseExited(e -> changePassword_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        about_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        about_btn.setOnMouseEntered(e -> about_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        about_btn.setOnMouseExited(e -> about_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        deleteAccount_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        deleteAccount_btn.setOnMouseEntered(e -> deleteAccount_btn.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        deleteAccount_btn.setOnMouseExited(e -> deleteAccount_btn.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        productListDownload.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        productListDownload.setOnMouseEntered(e -> productListDownload.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        productListDownload.setOnMouseExited(e -> productListDownload.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        addshop.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        addshop.setOnMouseEntered(e -> addshop.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        addshop.setOnMouseExited(e -> addshop.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        deleteshop.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        deleteshop.setOnMouseEntered(e -> deleteshop.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        deleteshop.setOnMouseExited(e -> deleteshop.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+        shoppay.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;");
+        shoppay.setOnMouseEntered(e -> shoppay.setStyle("-fx-background-color: white; -fx-text-fill: black;"));
+        shoppay.setOnMouseExited(e -> shoppay.setStyle("-fx-background-color: #1c1c1c; -fx-text-fill: white;"));
+
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        displayUsername();
+        numberOfOrders();
+        type();
+        status();
+        showProductList();
+        ButtonStyles();
+        Grettings();
+
+        numberofProducts();
+
+        TodaysIncome();
+        dashboardChart();
+
+        showUserImage();
+
+        orderProductID();
+        orderProductName();
+        showCart();
+
+    }
+
+    @FXML
+    private void switchButtons(ActionEvent event) {
+        if (event.getSource() == dashboard_btn) {
+            dashboard_page.setVisible(true);
+            product_page.setVisible(false);
+            order_page.setVisible(false);
+            settings_page.setVisible(false);
+            numberofProducts();
+            TodaysIncome();
+            dashboardChart();
+            numberOfOrders();
+        } else if (event.getSource() == products_btn) {
+            dashboard_page.setVisible(false);
+            product_page.setVisible(true);
+            order_page.setVisible(false);
+            settings_page.setVisible(false);
+            showProductList();
+        } else if (event.getSource() == order_btn) {
+            dashboard_page.setVisible(false);
+            product_page.setVisible(false);
+            order_page.setVisible(true);
+            settings_page.setVisible(false);
+            orderProductID();
+            orderProductName();
+
+            showCart();
+        } else if (event.getSource() == settings_btn) {
+            dashboard_page.setVisible(false);
+            product_page.setVisible(false);
+            order_page.setVisible(false);
+            settings_page.setVisible(true);
+            showUserImage();
+        }
+
     }
 
 }

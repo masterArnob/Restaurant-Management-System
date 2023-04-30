@@ -10,6 +10,7 @@ package restaurant.management.system;
  * @author ASUS
  */
 public class cartList {
+    
     private String product_id;
     private String product_name;
     private String type;
@@ -63,6 +64,5 @@ public class cartList {
     public void setPrice(Integer price) {
         this.price = price;
     }
-    
     
 }
