@@ -22,7 +22,7 @@ Users can change their password at any time after logging in.
 ### 7. CRUD Operations: 
 
 
-Users can perform Create, Read, Update, and Delete operations on any coach or member information, making it easy to manage the restaurant data.
+Users can perform Create, Read, Update, and Delete operations on any product's information, making it easy to manage the restaurant data.
 
 
 ### Screenshot's:
