@@ -5,10 +5,10 @@ Our system allows for automated email notifications to be sent to new sign-ups, 
 
 
 ### 2. Generate Invoice: 
-Streamline your billing process with the Gym Management System's easy-to-use invoice generation feature, allowing for quick and efficient creation of downloadable or printable invoices.
+Streamline your billing process with the Restaurant Management System's easy-to-use invoice generation feature, allowing for quick and efficient creation of downloadable or printable invoices.
 
 ### 3. Printable Product Lists: 
-The Gym Management System allows users to download or print out coach and member lists.
+The Restaurant Management System allows users to download or print out product's list.
 
 
 ### 5. Forgot Password Email:
@@ -20,8 +20,6 @@ Users can change their password at any time after logging in.
 
 
 ### 7. CRUD Operations: 
-
-
 Users can perform Create, Read, Update, and Delete operations on any product's information, making it easy to manage the restaurant data.
 
 
